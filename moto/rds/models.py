@@ -1818,6 +1818,11 @@ class RDSBackend(BaseBackend):
         db_instance = self.describe_db_instances(
             db_instance_identifier=source_db_identifier
         )[0]
+
+        # remove the db subnet group as it cannot be copied
+        # and is not used in the restored instance
+        db_instance.db_subnet_group = None
+
         new_instance_props = copy.deepcopy(db_instance.__dict__)
         if not db_instance.option_group_supplied:
             # If the option group is not supplied originally, the 'option_group_name' will receive a default value
